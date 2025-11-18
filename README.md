@@ -10,3 +10,9 @@
 # Запуск скрипта
 - Без названия отчёта: python3 main.py --files files/employees1.csv files/employees2.csv --report performance
 - С названием отчёта: python3 main.py --files files/employees1.csv files/employees2.csv --report performance --result Тестовый отчёт
+
+
+
+- В папке проекта лежат отчёты в виде изображений.
+
+- В папке files лежат два csv-файла с данными.
