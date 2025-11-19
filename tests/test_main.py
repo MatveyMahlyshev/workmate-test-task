@@ -1,8 +1,10 @@
 import sys
 from unittest.mock import patch, MagicMock
 import pytest
+import argparse
 
-from main import parse_arguments, pos_with_avg
+from reports import ReportManager, ReportBase, PositionPerformanceReport
+from helpers import parse_arguments
 
 
 class TestParseArguments:
@@ -82,71 +84,122 @@ class TestParseArguments:
             assert "Вы неправильно ввели аргументы" in captured.out
 
 
-class TestPosWithAvg:
-    """Тесты для функции pos_with_avg"""
+class TestReportBase:
+    """Тесты для базового класса отчётов"""
+
+    def test_report_base_is_abstract(self):
+        with pytest.raises(TypeError):
+            ReportBase()
+
+
+class TestPositionPerformanceReport:
+    """Тесты для отчёта по производительности"""
 
     @pytest.fixture
-    def sample_csv_data(self):
-        """Фикстура с тестовыми CSV данными"""
-        return """name,position,completed_tasks,performance,skills,team,experience_years
-Alex Ivanov,Backend Developer,45,4.8,Python,API Team,5
-Maria Petrova,Frontend Developer,38,4.7,React,Web Team,4
-John Smith,Backend Developer,29,4.6,Python,AI Team,3
-Anna Lee,Frontend Developer,52,4.9,JavaScript,Infrastructure Team,6"""
+    def report(self):
+        return PositionPerformanceReport()
+
+    @pytest.fixture
+    def sample_data(self):
+        return [
+            {"name": "Иван", "position": "Developer", "performance": "0.8"},
+            {"name": "Петр", "position": "Developer", "performance": "0.9"},
+            {"name": "Мария", "position": "Designer", "performance": "0.7"},
+            {"name": "Анна", "position": "Designer", "performance": "0.85"},
+        ]
 
     @pytest.fixture
     def mock_args(self):
-        """Фикстура с mock аргументами"""
-        args = MagicMock()
-        args.files = ["test.csv"]
+        args = MagicMock(spec=argparse.Namespace)
         args.report = "performance"
+        args.result = None
         return args
 
-    def test_pos_with_avg_calculation(self, sample_csv_data, mock_args, tmp_path):
-        """Тест расчета средних значений"""
-        csv_file = tmp_path / "test.csv"
-        csv_file.write_text(sample_csv_data, encoding="utf-8")
-        mock_args.files = [str(csv_file)]
+    def test_get_supported_reports(self, report):
+        """Тест поддерживаемых отчётов"""
+        supported = report.get_supported_reports()
+        assert supported == ["performance"]
+        assert isinstance(supported, list)
 
-        result = pos_with_avg(mock_args)
+    def test_generate_report(self, report, sample_data, mock_args):
+        """Тест генерации отчёта"""
+        result = report.generate(sample_data, mock_args)
 
-        assert "Backend Developer" in result
-        assert "Frontend Developer" in result
-        assert "4.7" in result
-        assert "4.8" in result
+        assert "Developer" in result
+        assert "Designer" in result
+        assert "0.85" in result 
+        assert "0.77" in result  
 
-    def test_pos_with_avg_sorting(self, sample_csv_data, mock_args, tmp_path):
-        """Тест сортировки результатов"""
-        csv_file = tmp_path / "test.csv"
-        csv_file.write_text(sample_csv_data, encoding="utf-8")
-        mock_args.files = [str(csv_file)]
-
-        result = pos_with_avg(mock_args)
-
+    def test_generate_report_sorting(self, report, sample_data, mock_args):
+        """Тест сортировки результатов по убыванию"""
+        result = report.generate(sample_data, mock_args)
         lines = result.split("\n")
-        data_lines = [line for line in lines if "Developer" in line]
 
-        assert "Frontend Developer" in data_lines[0]
-        assert "Backend Developer" in data_lines[1]
+        data_lines = [
+            line for line in lines if "Developer" in line or "Designer" in line
+        ]
+        assert (
+            "Developer" in data_lines[0]
+        )  
+        assert "Designer" in data_lines[1]
 
-    def test_pos_with_avg_multiple_files(self, sample_csv_data, mock_args, tmp_path):
-        """Тест с несколькими файлами"""
-        csv_file1 = tmp_path / "test1.csv"
-        csv_file2 = tmp_path / "test2.csv"
+    def test_generate_empty_data(self, report, mock_args):
+        """Тест с пустыми данными"""
+        result = report.generate([], mock_args)
+        assert "position" in result  
+        assert "performance" in result
 
-        csv_file1.write_text(sample_csv_data, encoding="utf-8")
-        csv_file2.write_text(sample_csv_data, encoding="utf-8")
 
-        mock_args.files = [str(csv_file1), str(csv_file2)]
+class TestReportManager:
+    """Тесты для менеджера отчётов"""
 
-        result = pos_with_avg(mock_args)
+    @pytest.fixture
+    def manager(self):
+        return ReportManager()
 
-        assert "Backend Developer" in result
-        assert "Frontend Developer" in result
+    def test_initialization(self, manager):
+        """Тест инициализации менеджера"""
+        assert hasattr(manager, "reports")
+        assert isinstance(manager.reports, dict)
 
-    def test_file_not_found(self, mock_args):
-        """Тест с несуществующим файлом"""
-        mock_args.files = ["nonexistent.csv"]
+    def test_get_report_existing(self, manager):
+        """Тест получения существующего отчёта"""
+        report = manager.get_report("performance")
+        assert report is not None
+        assert isinstance(report, PositionPerformanceReport)
 
-        with pytest.raises(FileNotFoundError):
-            pos_with_avg(mock_args)
+    def test_get_report_nonexistent(self, manager):
+        """Тест получения несуществующего отчёта"""
+        report = manager.get_report("nonexistent")
+        assert report is None
+
+    def test_register_new_report(self, manager):
+        """Тест регистрации нового отчёта"""
+
+        class TestReport(ReportBase):
+            def generate(self, data, args):
+                return "test report"
+
+            def get_supported_reports(self):
+                return ["test_report"]
+
+        test_report = TestReport()
+        manager.register_report(test_report)
+
+        assert manager.get_report("test_report") == test_report
+
+    def test_register_report_multiple_types(self, manager):
+        """Тест регистрации отчёта с несколькими типами"""
+
+        class MultiReport(ReportBase):
+            def generate(self, data, args):
+                return "multi report"
+
+            def get_supported_reports(self):
+                return ["type1", "type2", "type3"]
+
+        multi_report = MultiReport()
+        manager.register_report(multi_report)
+
+        assert manager.get_report("type1") == multi_report
+        assert manager.get_report("type2") == multi_report

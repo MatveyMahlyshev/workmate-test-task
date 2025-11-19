@@ -1,26 +1,7 @@
 name,position,completed_tasks,performance,skills,team,experience_years
-Mason King,DevOps Engineer,49,4.9,"Docker Swarm, Consul, Vault, Nomad",Infrastructure Team,6
-Harper Scott,QA Engineer,36,4.4,"JMeter, LoadRunner, Performance Testing",Testing Team,3
-Benjamin Green,Backend Developer,44,4.7,"PHP, Laravel, MySQL, Redis",API Team,4
-Evelyn Adams,Frontend Developer,41,4.6,"React, GraphQL, Apollo, Storybook",Web Team,5
-Logan Nelson,Data Scientist,32,4.7,"Julia, DataFrames.jl, Flux.jl, Plots",AI Team,4
-Abigail Baker,DevOps Engineer,51,4.8,"AWS ECS, Fargate, Route53, CloudFront",Infrastructure Team,7
-Jacob Carter,QA Engineer,39,4.5,"Robot Framework, Python, Selenium Library",Testing Team,4
-Ella Mitchell,Backend Developer,42,4.8,"Scala, Akka, Play Framework, Cassandra",API Team,6
-Jackson Perez,Frontend Developer,37,4.7,"Vue 3, Composition API, Pinia, Vuetify",Web Team,4
-Scarlett Roberts,Data Scientist,34,4.6,"MATLAB, Simulink, Statistics, Forecasting",AI Team,5
-Sebastian Turner,DevOps Engineer,47,4.9,"GitHub Actions, CircleCI, Travis CI",Infrastructure Team,6
-Victoria Phillips,QA Engineer,41,4.6,"C#, .NET, SpecFlow, Visual Studio",Testing Team,5
-Jack Campbell,Backend Developer,45,4.7,"Elixir, Phoenix, Ecto, Absinthe",API Team,5
-Luna Parker,Frontend Developer,38,4.5,"Ember.js, Handlebars, Mirage, Ember Data",Web Team,3
-Owen Evans,Data Scientist,30,4.8,"Python, Prophet, Statsmodels, Seaborn",AI Team,4
-Grace Edwards,DevOps Engineer,54,4.9,"OpenStack, Ceph, Proxmox, Zabbix",Infrastructure Team,8
-Luke Collins,QA Engineer,40,4.7,"Java, TestContainers, WireMock, Mockito",Testing Team,5
-Chloe Stewart,Backend Developer,43,4.8,"Kotlin, Spring, Hibernate, Kafka",API Team,6
-Henry Morris,Frontend Developer,39,4.6,"SolidJS, Vite, TanStack Query, CSS Modules",Web Team,4
-Zoe Rivera,Data Scientist,36,4.7,"Python, Dask, Vaex, Plotly",AI Team,5
-Gabriel Morgan,DevOps Engineer,52,4.9,"Terraform Cloud, Packer, Vagrant, Chef",Infrastructure Team,7
-Lily Bell,QA Engineer,37,4.5,"Python, Behave, BDD, Allure Reports",Testing Team,4
-Lily Bell,QA Engineer,37,4.5,"Python, Behave, BDD, Allure Reports",Testing Team,4
-Lily Bell,QA Engineer,37,4.5,"Python, Behave, BDD, Allure Reports",Testing Team,4
-Lily Bell,QA Engineer,37,4.5,"Python, Behave, BDD, Allure Reports",Testing Team,4
+Alex Ivanov,Backend Developer,45,4.8,"Python, Django, PostgreSQL, Docker",API Team,5
+Maria Petrova,Frontend Developer,38,4.7,"React, TypeScript, Redux, CSS",Web Team,4
+John Smith,Data Scientist,29,4.6,"Python, ML, SQL, Pandas",AI Team,3
+Anna Lee,DevOps Engineer,52,4.9,"AWS, Kubernetes, Terraform, Ansible",Infrastructure Team,6
+Mike Brown,QA Engineer,41,4.5,"Selenium, Jest, Cypress, Postman",Testing Team,4
+Sarah Johnson,Fullstack Developer,47,4.7,"JavaScript, Node.js, React, MongoDB",Web Team,5
